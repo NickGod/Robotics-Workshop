@@ -37,10 +37,6 @@ namespace Internals
         STEPDOWN = 100,
     };
 
-//    enum TIMING
-//    {
-//        TURNTIMEOUT = 200,
-//    };
 };
 
 static Internals::Direction Dir = Internals::CENTER;
@@ -97,6 +93,7 @@ void setup()
     Serial.begin(9600);
 }
 
+
 void sendBit(uint8_t b)
 {
     digitalWrite(CLK, HIGH);
@@ -122,6 +119,7 @@ void sendByte(uint8_t b)
         sendBit((b & (1 << i)) >> i);
     }
 }
+
 void sendTransaction(uint8_t s)
 {
     // Begin transaction
@@ -144,8 +142,6 @@ void sendTransaction(uint8_t s)
     digitalWrite(RST, LOW);
 }
 
-static int LastTurn = 0;
-
 void loop() 
 {
     switch(Dir)
@@ -161,15 +157,10 @@ void loop()
         case Internals::CENTER:
             digitalWrite(LEFT, HIGH);
             digitalWrite(RIGHT, HIGH);
+            break;
     }
 
     sendTransaction(speed);
-
-//    // if it's been some time, set wheels back to center
-//    if ((millis() - LastTurn) > Internals::TURNTIMEOUT)
-//    {
-//        Dir = Internals::CENTER;
-//    }
 }
 
 void serialEvent() {
@@ -181,7 +172,6 @@ void serialEvent() {
     {
         case 37:
             moveLeft();
-            LastTurn = millis();
             Serial.println("Left!");
             break;
         case 38:
@@ -192,7 +182,6 @@ void serialEvent() {
             break;
         case 39:
             moveRight();
-            LastTurn = millis();
             Serial.println("Right!");
             break;
         case 40:
