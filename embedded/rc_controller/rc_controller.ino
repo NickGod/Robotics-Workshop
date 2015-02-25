@@ -37,10 +37,6 @@ namespace Internals
         STEPDOWN = 100,
     };
 
-//    enum TIMING
-//    {
-//        TURNTIMEOUT = 200,
-//    };
 };
 
 static Internals::Direction Dir = Internals::CENTER;
@@ -97,6 +93,7 @@ void setup()
     Serial.begin(9600);
 }
 
+
 void sendBit(uint8_t b)
 {
 }
@@ -123,8 +120,23 @@ void sendTransaction(uint8_t s)
 
 void loop() 
 {
-    // Read values of Dir and Speed and use helper functions and global
-    // variables to steer the car.
+    switch(Dir)
+    {
+        case Internals::LEFT:
+            digitalWrite(RIGHT, LOW);
+            digitalWrite(LEFT, HIGH);
+            break;
+        case Internals::RIGHT:
+            digitalWrite(LEFT, LOW);
+            digitalWrite(RIGHT, HIGH);
+            break;
+        case Internals::CENTER:
+            digitalWrite(LEFT, HIGH);
+            digitalWrite(RIGHT, HIGH);
+            break;
+    }
+
+    sendTransaction(speed);
 }
 
 void serialEvent() {
@@ -135,6 +147,7 @@ void serialEvent() {
     switch(inChar)
     {
         case 37:
+            moveLeft();
             Serial.println("Left!");
             break;
         case 38:
@@ -143,6 +156,7 @@ void serialEvent() {
             Serial.println(getSpeed());
             break;
         case 39:
+            moveRight();
             Serial.println("Right!");
             break;
         case 40:
