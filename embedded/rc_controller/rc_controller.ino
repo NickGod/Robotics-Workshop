@@ -99,77 +99,32 @@ void setup()
 
 void sendBit(uint8_t b)
 {
-    digitalWrite(CLK, HIGH);
-    delayMicroseconds(1);
-    if (b&1)
-    {
-        digitalWrite(DQ, HIGH);
-    }
-    else
-    {
-        digitalWrite(DQ, LOW);
-    }
-    delayMicroseconds(1);
-    digitalWrite(CLK, LOW);
-    delayMicroseconds(1);
-    digitalWrite(CLK, HIGH);
 }
 
 void sendByte(uint8_t b)
 {
     for (int i = 7; i >= 0; i--)
     {
-        sendBit((b & (1 << i)) >> i);
     }
 }
+
 void sendTransaction(uint8_t s)
 {
     // Begin transaction
-    digitalWrite(CLK, LOW);
-    digitalWrite(RST, HIGH);
-    delayMicroseconds(1);
 
     // Stack select bit
-    sendBit(0);
 
     // Send first wiper position
-    sendByte(s);
 
     // Send second wiper position
-    sendByte(s);
 
     // End transaction
-    digitalWrite(CLK, HIGH);
-    delayMicroseconds(1);
-    digitalWrite(RST, LOW);
 }
-
-static int LastTurn = 0;
 
 void loop() 
 {
-    switch(Dir)
-    {
-        case Internals::LEFT:
-            digitalWrite(RIGHT, LOW);
-            digitalWrite(LEFT, HIGH);
-            break;
-        case Internals::RIGHT:
-            digitalWrite(LEFT, LOW);
-            digitalWrite(RIGHT, HIGH);
-            break;
-        case Internals::CENTER:
-            digitalWrite(LEFT, HIGH);
-            digitalWrite(RIGHT, HIGH);
-    }
-
-    sendTransaction(speed);
-
-//    // if it's been some time, set wheels back to center
-//    if ((millis() - LastTurn) > Internals::TURNTIMEOUT)
-//    {
-//        Dir = Internals::CENTER;
-//    }
+    // Read values of Dir and Speed and use helper functions and global
+    // variables to steer the car.
 }
 
 void serialEvent() {
@@ -180,29 +135,22 @@ void serialEvent() {
     switch(inChar)
     {
         case 37:
-            moveLeft();
-            LastTurn = millis();
             Serial.println("Left!");
             break;
         case 38:
-            setSpeed(constrain(getSpeed() - Internals::STEPUP, Internals::BOTTOM, Internals::TOP));
             Serial.println("Go Go Go!");
             Serial.print("Speed: " );
             Serial.println(getSpeed());
             break;
         case 39:
-            moveRight();
-            LastTurn = millis();
             Serial.println("Right!");
             break;
         case 40:
-            setSpeed(constrain(getSpeed() + Internals::STEPDOWN, Internals::BOTTOM, Internals::TOP));
             Serial.println("Slower!");
             Serial.print("Speed: " );
             Serial.println(getSpeed());
             break;
         case 32:
-            setSpeed(Internals::ZERO);
             Serial.println("Stop!");
             break;
     }
