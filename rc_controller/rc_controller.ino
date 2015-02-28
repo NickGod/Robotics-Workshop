@@ -33,8 +33,8 @@ namespace Internals
         ZERO = 80,
         TOP = 255,
         BOTTOM = 0,
-        STEPUP = 100,
-        STEPDOWN = 100,
+        STEPUP = 50,
+        STEPDOWN = 50,
     };
 
 };
@@ -170,27 +170,27 @@ void serialEvent() {
 
     switch(inChar)
     {
-        case 37:
+        case Externals::LEFT:
             moveLeft();
             Serial.println("Left!");
             break;
-        case 38:
+        case Externals::FORWARD:
             setSpeed(constrain(getSpeed() - Internals::STEPUP, Internals::BOTTOM, Internals::TOP));
             Serial.println("Go Go Go!");
             Serial.print("Speed: " );
             Serial.println(getSpeed());
             break;
-        case 39:
+        case Externals::RIGHT:
             moveRight();
             Serial.println("Right!");
             break;
-        case 40:
+        case Externals::BACK:
             setSpeed(constrain(getSpeed() + Internals::STEPDOWN, Internals::BOTTOM, Internals::TOP));
             Serial.println("Slower!");
             Serial.print("Speed: " );
             Serial.println(getSpeed());
             break;
-        case 32:
+        case Externals::STOP:
             setSpeed(Internals::ZERO);
             Serial.println("Stop!");
             break;
