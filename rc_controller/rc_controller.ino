@@ -96,50 +96,26 @@ void setup()
 
 void sendBit(uint8_t b)
 {
-    digitalWrite(CLK, HIGH);
-    delayMicroseconds(1);
-    if (b&1)
-    {
-        digitalWrite(DQ, HIGH);
-    }
-    else
-    {
-        digitalWrite(DQ, LOW);
-    }
-    delayMicroseconds(1);
-    digitalWrite(CLK, LOW);
-    delayMicroseconds(1);
-    digitalWrite(CLK, HIGH);
 }
 
 void sendByte(uint8_t b)
 {
     for (int i = 7; i >= 0; i--)
     {
-        sendBit((b & (1 << i)) >> i);
     }
 }
 
 void sendTransaction(uint8_t s)
 {
     // Begin transaction
-    digitalWrite(CLK, LOW);
-    digitalWrite(RST, HIGH);
-    delayMicroseconds(1);
 
     // Stack select bit
-    sendBit(0);
 
     // Send first wiper position
-    sendByte(s);
 
     // Send second wiper position
-    sendByte(s);
 
     // End transaction
-    digitalWrite(CLK, HIGH);
-    delayMicroseconds(1);
-    digitalWrite(RST, LOW);
 }
 
 void loop() 
